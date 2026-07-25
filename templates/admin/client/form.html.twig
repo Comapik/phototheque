@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ client.id ? 'Modifier' : 'Nouveau' }} client{% endblock %}
+
+{% block body %}
+    <div class="page">
+        <h1>{{ client.id ? 'Modifier' : 'Nouveau' }} client</h1>
+
+        {{ form_start(form) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.codeAcces) }}
+
+            <div>
+                <label>{{ form.evenements.vars.label }}</label>
+                <div class="checkbox-list">
+                    {% for choix in form.evenements %}
+                        <label>{{ form_widget(choix) }} {{ choix.vars.label }}</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit">Enregistrer</button>
+        {{ form_end(form) }}
+
+        <p><a href="{{ path('admin_clients') }}">Retour à la liste</a></p>
+    </div>
+{% endblock %}

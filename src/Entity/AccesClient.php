@@ -6,7 +6,7 @@ use App\Repository\AccesClientRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Association entre un client (User) et un Evenement : un client ne voit que
+ * Association entre un Client et un Evenement : un client ne voit que
  * les événements pour lesquels une entrée existe ici.
  */
 #[ORM\Entity(repositoryClass: AccesClientRepository::class)]
@@ -18,9 +18,9 @@ class AccesClient
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'accesClients')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $client = null;
+    private ?Client $client = null;
 
     #[ORM\ManyToOne(targetEntity: Evenement::class, inversedBy: 'accesClients')]
     #[ORM\JoinColumn(nullable: false)]
@@ -39,12 +39,12 @@ class AccesClient
         return $this->id;
     }
 
-    public function getClient(): ?User
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?User $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 

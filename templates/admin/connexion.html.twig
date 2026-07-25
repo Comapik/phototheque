@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion admin{% endblock %}
+
+{% block body %}
+    <div class="page">
+        <h1>Espace photographe</h1>
+
+        {% if erreur %}
+            <p class="erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</p>
+        {% endif %}
+
+        <form method="post" action="{{ path('admin_connexion') }}">
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="_username" value="{{ dernier_identifiant }}" required autofocus>
+            </div>
+
+            <div>
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="_password" required>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block body %}
+    <div class="page">
+        <h1>Clients</h1>
+
+        {% for message in app.flashes('success') %}
+            <p>{{ message }}</p>
+        {% endfor %}
+
+        <p><a class="bouton" href="{{ path('admin_client_nouveau') }}">+ Nouveau client</a></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Événements</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                    <tr>
+                        <td>{{ client.nom }}</td>
+                        <td>{{ client.evenements|map(e => e.nom)|join(', ') }}</td>
+                        <td>
+                            <a href="{{ path('admin_client_edition', { id: client.id }) }}">Modifier</a>
+                            <form method="post" action="{{ path('admin_client_suppression', { id: client.id }) }}" style="display:inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('suppression' ~ client.id) }}">
+                                <button type="submit" onclick="return confirm('Supprimer ce client ?')">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">Aucun client pour l'instant.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><a href="{{ path('admin_deconnexion') }}">Se déconnecter</a></p>
+    </div>
+{% endblock %}
