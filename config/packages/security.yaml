@@ -48,6 +48,8 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/connexion, roles: PUBLIC_ACCESS }
         - { path: ^/mes-evenements, roles: ROLE_CLIENT }
+        - { path: ^/evenements, roles: ROLE_CLIENT }
+        - { path: ^/photos, roles: ROLE_CLIENT }
 
 when@test:
     security:

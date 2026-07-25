@@ -12,8 +12,10 @@
             <ul class="liste-evenements">
                 {% for evenement in evenements %}
                     <li>
-                        <strong>{{ evenement.nom }}</strong>
-                        <span class="date">{{ evenement.date|date('d/m/Y') }}</span>
+                        <a href="{{ path('client_evenement_voir', { id: evenement.id }) }}">
+                            <strong>{{ evenement.nom }}</strong>
+                            <span class="date">{{ evenement.date|date('d/m/Y') }}</span>
+                        </a>
                     </li>
                 {% endfor %}
             </ul>

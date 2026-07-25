@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ evenement.nom }}{% endblock %}
+
+{% block body %}
+    <div class="page page--large">
+        <p><a href="{{ path('client_mes_evenements') }}">← Mes événements</a></p>
+
+        <h1>{{ evenement.nom }}</h1>
+        <p class="date">{{ evenement.date|date('d/m/Y') }}</p>
+        {% if evenement.description %}
+            <p>{{ evenement.description }}</p>
+        {% endif %}
+
+        {% if photos is empty %}
+            <p>Aucune photo n'a encore été ajoutée pour cet événement.</p>
+        {% else %}
+            <div class="grille-photos">
+                {% for photo in photos %}
+                    <figure>
+                        <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
+                        <figcaption>
+                            <a class="bouton" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
+                        </figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <p><a href="{{ path('client_deconnexion') }}">Se déconnecter</a></p>
+    </div>
+{% endblock %}
