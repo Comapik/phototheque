@@ -18,6 +18,7 @@
                     <th>Nom</th>
                     <th>Date</th>
                     <th>Photos</th>
+                    <th>Clients</th>
                     <th></th>
                 </tr>
             </thead>
@@ -27,12 +28,14 @@
                         <td>{{ evenement.nom }}</td>
                         <td>{{ evenement.date|date('d/m/Y') }}</td>
                         <td>{{ evenement.photos|length }}</td>
+                        <td>{{ evenement.clients|map(c => c.nom)|join(', ') }}</td>
                         <td>
-                            <a href="{{ path('admin_evenement_photos', { id: evenement.id }) }}">Gérer les photos</a>
+                            <a href="{{ path('admin_evenement_photos', { id: evenement.id }) }}">Photos</a>
+                            <a href="{{ path('admin_evenement_edition', { id: evenement.id }) }}">Modifier</a>
                         </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="4">Aucun événement pour l'instant.</td></tr>
+                    <tr><td colspan="5">Aucun événement pour l'instant.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

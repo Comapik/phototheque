@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\AccesClient;
 use App\Entity\Evenement;
 use App\Form\EvenementType;
 use App\Repository\EvenementRepository;
@@ -40,11 +41,64 @@ class EvenementController extends AbstractController
             }
 
             $em->persist($evenement);
+
+            foreach ($form->get('clients')->getData() as $client) {
+                $acces = new AccesClient();
+                $acces->setClient($client);
+                $acces->setEvenement($evenement);
+                $em->persist($acces);
+            }
+
             $em->flush();
 
             $this->addFlash('success', 'Événement créé.');
 
             return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
+        }
+
+        return $this->render('admin/evenement/form.html.twig', [
+            'form' => $form,
+            'evenement' => $evenement,
+        ]);
+    }
+
+    #[Route('/admin/evenements/{id}/edition', name: 'admin_evenement_edition', methods: ['GET', 'POST'])]
+    public function edition(Evenement $evenement, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $form = $this->createForm(EvenementType::class, $evenement);
+        $form->get('clients')->setData($evenement->getClients());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$evenement->getSlug()) {
+                $evenement->setSlug(strtolower((string) $slugger->slug($evenement->getNom())));
+            }
+
+            $selectionnes = $form->get('clients')->getData();
+            $selectionnesIds = array_map(static fn ($client) => $client->getId(), $selectionnes);
+
+            foreach ($evenement->getAccesClients() as $acces) {
+                if (!in_array($acces->getClient()->getId(), $selectionnesIds, true)) {
+                    $evenement->removeAccesClient($acces);
+                    $em->remove($acces);
+                }
+            }
+
+            $dejaLies = array_map(static fn ($client) => $client->getId(), $evenement->getClients());
+            foreach ($selectionnes as $client) {
+                if (!in_array($client->getId(), $dejaLies, true)) {
+                    $acces = new AccesClient();
+                    $acces->setClient($client);
+                    $acces->setEvenement($evenement);
+                    $em->persist($acces);
+                }
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Événement mis à jour.');
+
+            return $this->redirectToRoute('admin_evenements');
         }
 
         return $this->render('admin/evenement/form.html.twig', [

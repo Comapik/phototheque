@@ -182,4 +182,15 @@ class Evenement
 
         return $this;
     }
+
+    /**
+     * @return Client[]
+     */
+    public function getClients(): array
+    {
+        return array_map(
+            static fn (AccesClient $acces): Client => $acces->getClient(),
+            $this->accesClients->toArray()
+        );
+    }
 }
