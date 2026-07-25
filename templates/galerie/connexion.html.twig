@@ -3,22 +3,27 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <div class="page">
-        <h1>Accéder à mes photos</h1>
-
-        {% if erreur %}
-            <p class="erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</p>
-        {% endif %}
-
-        <form method="post" action="{{ path('client_connexion') }}">
-            <div>
-                <label for="code">Code d'accès</label>
-                <input type="password" id="code" name="code" required autofocus autocomplete="off">
+    <div class="ecran-connexion">
+        <div class="carte">
+            <div class="ecran-connexion__marque">
+                <strong>Comapik</strong>
             </div>
+            <h1>Accéder à mes photos</h1>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('client_connexion') }}">
+            {% if erreur %}
+                <div class="alerte alerte--erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</div>
+            {% endif %}
 
-            <button type="submit">Voir mes événements</button>
-        </form>
+            <form method="post" action="{{ path('client_connexion') }}">
+                <div class="champ">
+                    <label for="code">Code d'accès</label>
+                    <input type="password" id="code" name="code" required autofocus autocomplete="off" inputmode="text">
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('client_connexion') }}">
+
+                <button type="submit" class="bouton--pleine-largeur">Voir mes photos</button>
+            </form>
+        </div>
     </div>
 {% endblock %}

@@ -31,6 +31,15 @@ class PhotoController extends AbstractController
         return $response;
     }
 
+    #[Route('/admin/photos/{id}/apercu', name: 'admin_photo_apercu', methods: ['GET'])]
+    public function apercu(Photo $photo): BinaryFileResponse
+    {
+        $response = new BinaryFileResponse($this->photosDir.'/'.$photo->getCheminBasseDef());
+        $response->headers->set('Cache-Control', 'private, max-age=3600');
+
+        return $response;
+    }
+
     #[Route('/admin/photos/{id}/suppression', name: 'admin_photo_suppression', methods: ['POST'])]
     public function suppression(Photo $photo, Request $request, EntityManagerInterface $em, ImageProcessor $imageProcessor): Response
     {

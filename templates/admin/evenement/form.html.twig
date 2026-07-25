@@ -1,31 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ evenement.id ? 'Modifier' : 'Nouvel' }} événement{% endblock %}
+{% block title %}{{ evenement.id ? 'Modifier' : 'Nouvel' }} événement — Comapik{% endblock %}
 
 {% block body %}
+    {% include 'admin/_nav.html.twig' %}
+
     <div class="page">
         <h1>{{ evenement.id ? 'Modifier' : 'Nouvel' }} événement</h1>
 
-        {{ form_start(form) }}
-            {{ form_row(form.nom) }}
-            {{ form_row(form.date) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.slug) }}
+        <div class="carte">
+            {{ form_start(form) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.date) }}
+                {{ form_row(form.description) }}
+                {{ form_row(form.slug) }}
 
-            <div>
-                <label>{{ form.clients.vars.label }}</label>
-                <div class="checkbox-list">
-                    {% for choix in form.clients %}
-                        <label>{{ form_widget(choix) }} {{ choix.vars.label }}</label>
-                    {% else %}
-                        <p>Aucun client n'existe encore. <a href="{{ path('admin_client_nouveau') }}">En créer un</a>.</p>
-                    {% endfor %}
+                <div class="champ">
+                    <label>{{ form.clients.vars.label }}</label>
+                    <div class="checkbox-list">
+                        {% for choix in form.clients %}
+                            <label>{{ form_widget(choix) }} {{ choix.vars.label }}</label>
+                        {% else %}
+                            <p class="vide">Aucun client n'existe encore. <a href="{{ path('admin_client_nouveau') }}">En créer un</a>.</p>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit">Enregistrer</button>
-        {{ form_end(form) }}
+                <button type="submit" class="bouton--pleine-largeur">Enregistrer</button>
+            {{ form_end(form) }}
+        </div>
 
-        <p><a href="{{ path('admin_accueil') }}">Retour à la liste</a></p>
+        <p><a class="bouton bouton--secondaire" href="{{ path('admin_accueil') }}">← Retour à la liste</a></p>
     </div>
 {% endblock %}

@@ -1,32 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ evenement.nom }}{% endblock %}
+{% block title %}{{ evenement.nom }} — Comapik{% endblock %}
 
 {% block body %}
-    <div class="page page--large">
-        <p><a href="{{ path('client_mes_evenements') }}">← Mes événements</a></p>
+    {% include 'galerie/_nav.html.twig' %}
 
-        <h1>{{ evenement.nom }}</h1>
-        <p class="date">{{ evenement.date|date('d/m/Y') }}</p>
-        {% if evenement.description %}
-            <p>{{ evenement.description }}</p>
-        {% endif %}
+    <div class="page page--large">
+        <p><a class="bouton bouton--secondaire bouton--petit" href="{{ path('client_mes_evenements') }}">← Mes événements</a></p>
+
+        <div class="entete-section">
+            <h1>{{ evenement.nom }}</h1>
+        </div>
+        <p class="sous-titre">
+            {{ evenement.date|date('d/m/Y') }}
+            {% if evenement.description %} · {{ evenement.description }}{% endif %}
+        </p>
 
         {% if photos is empty %}
-            <p>Aucune photo n'a encore été ajoutée pour cet événement.</p>
+            <p class="etat-vide">Aucune photo n'a encore été ajoutée pour cet événement.</p>
         {% else %}
-            <div class="grille-photos">
+            <ul class="grille-photos">
                 {% for photo in photos %}
-                    <figure>
-                        <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
-                        <figcaption>
-                            <a class="bouton" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
-                        </figcaption>
-                    </figure>
+                    <li>
+                        <figure>
+                            <button type="button" class="photo-vignette" data-visionneuse
+                                    data-src="{{ path('client_photo_apercu', { id: photo.id }) }}"
+                                    data-nom="{{ photo.nomOriginal }}"
+                                    data-telechargement="{{ path('client_photo_telechargement', { id: photo.id }) }}">
+                                <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
+                            </button>
+                            <figcaption>
+                                <a class="bouton bouton--petit bouton--pleine-largeur" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
+                            </figcaption>
+                        </figure>
+                    </li>
                 {% endfor %}
-            </div>
+            </ul>
         {% endif %}
-
-        <p><a href="{{ path('client_deconnexion') }}">Se déconnecter</a></p>
     </div>
+
+    {% include '_visionneuse.html.twig' %}
 {% endblock %}

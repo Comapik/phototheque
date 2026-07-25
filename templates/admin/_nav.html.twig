@@ -1,0 +1,9 @@
+{% set route = app.request.attributes.get('_route') %}
+<header class="entete">
+    <a class="entete__marque" href="{{ path('admin_accueil') }}">Comapik <span>Admin</span></a>
+    <nav class="entete__nav">
+        <a class="entete__lien{% if route starts with 'admin_evenement' or route == 'admin_accueil' %} entete__lien--actif{% endif %}" href="{{ path('admin_accueil') }}">Événements</a>
+        <a class="entete__lien{% if route starts with 'admin_client' %} entete__lien--actif{% endif %}" href="{{ path('admin_clients') }}">Clients</a>
+        <a class="entete__lien entete__lien--deconnexion" href="{{ path('admin_deconnexion') }}">Déconnexion</a>
+    </nav>
+</header>

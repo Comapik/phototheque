@@ -28,6 +28,17 @@ class PhotoController extends AbstractController
         return $response;
     }
 
+    #[Route('/photos/{id}/apercu', name: 'client_photo_apercu', methods: ['GET'])]
+    public function apercu(Photo $photo): BinaryFileResponse
+    {
+        $this->denyAccessUnlessGranted('EVENEMENT_VOIR', $photo->getEvenement());
+
+        $response = new BinaryFileResponse($this->photosDir.'/'.$photo->getCheminBasseDef());
+        $response->headers->set('Cache-Control', 'private, max-age=3600');
+
+        return $response;
+    }
+
     #[Route('/photos/{id}/telechargement', name: 'client_photo_telechargement', methods: ['GET'])]
     public function telechargement(Photo $photo): BinaryFileResponse
     {

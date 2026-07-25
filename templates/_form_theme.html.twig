@@ -1,0 +1,26 @@
+{% block form_row %}
+    <div class="champ{% if not valid %} champ--invalide{% endif %}">
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {{ form_help(form) }}
+    </div>
+{% endblock form_row %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <ul class="champ-erreurs">
+            {% for error in errors %}
+                <li>{{ error.message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock form_errors %}
+
+{% block checkbox_row %}
+    <div class="champ champ--checkbox">
+        {{ form_widget(form) }}
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+    </div>
+{% endblock checkbox_row %}

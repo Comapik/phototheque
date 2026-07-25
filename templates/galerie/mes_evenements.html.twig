@@ -1,26 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes événements{% endblock %}
+{% block title %}Mes événements — Comapik{% endblock %}
 
 {% block body %}
+    {% include 'galerie/_nav.html.twig' %}
+
     <div class="page">
         <h1>Mes événements</h1>
 
         {% if evenements is empty %}
-            <p>Aucun événement n'est accessible avec ce code pour le moment.</p>
+            <p class="etat-vide">Aucun événement n'est accessible avec ce code pour le moment.</p>
         {% else %}
             <ul class="liste-evenements">
                 {% for evenement in evenements %}
                     <li>
                         <a href="{{ path('client_evenement_voir', { id: evenement.id }) }}">
-                            <strong>{{ evenement.nom }}</strong>
-                            <span class="date">{{ evenement.date|date('d/m/Y') }}</span>
+                            <span>
+                                <strong>{{ evenement.nom }}</strong>
+                                <span class="date">{{ evenement.date|date('d/m/Y') }}</span>
+                            </span>
+                            <span class="chevron">›</span>
                         </a>
                     </li>
                 {% endfor %}
             </ul>
         {% endif %}
-
-        <p><a href="{{ path('client_deconnexion') }}">Se déconnecter</a></p>
     </div>
 {% endblock %}

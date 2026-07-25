@@ -3,27 +3,32 @@
 {% block title %}Connexion admin{% endblock %}
 
 {% block body %}
-    <div class="page">
-        <h1>Espace photographe</h1>
-
-        {% if erreur %}
-            <p class="erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</p>
-        {% endif %}
-
-        <form method="post" action="{{ path('admin_connexion') }}">
-            <div>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="_username" value="{{ dernier_identifiant }}" required autofocus>
+    <div class="ecran-connexion">
+        <div class="carte">
+            <div class="ecran-connexion__marque">
+                <strong>Comapik</strong>
             </div>
+            <h1>Espace photographe</h1>
 
-            <div>
-                <label for="password">Mot de passe</label>
-                <input type="password" id="password" name="_password" required>
-            </div>
+            {% if erreur %}
+                <div class="alerte alerte--erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</div>
+            {% endif %}
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <form method="post" action="{{ path('admin_connexion') }}">
+                <div class="champ">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="_username" value="{{ dernier_identifiant }}" required autofocus>
+                </div>
 
-            <button type="submit">Se connecter</button>
-        </form>
+                <div class="champ">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="_password" required>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="bouton--pleine-largeur">Se connecter</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
