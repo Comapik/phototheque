@@ -15,6 +15,10 @@ body {
     padding: 2rem 1.25rem;
 }
 
+.page--large {
+    max-width: 960px;
+}
+
 h1 {
     font-size: 1.4rem;
     margin: 0 0 1.5rem;
@@ -99,4 +103,39 @@ th, td {
 
 .checkbox-list label {
     font-weight: normal;
+}
+
+.grille-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.grille-photos figure {
+    margin: 0;
+}
+
+.grille-photos img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+.grille-photos figcaption {
+    font-size: 0.8rem;
+    word-break: break-all;
+    margin-top: 0.25rem;
+}
+
+.grille-photos figcaption form {
+    margin-top: 0.25rem;
+}
+
+.grille-photos figcaption button {
+    font-size: 0.75rem;
+    padding: 0.35rem;
+    background-color: #b00020;
 }

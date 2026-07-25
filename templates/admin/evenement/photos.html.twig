@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Photos — {{ evenement.nom }}{% endblock %}
+
+{% block body %}
+    <div class="page page--large">
+        <h1>{{ evenement.nom }}</h1>
+
+        {% for message in app.flashes('success') %}
+            <p>{{ message }}</p>
+        {% endfor %}
+        {% for message in app.flashes('erreur') %}
+            <p class="erreur">{{ message }}</p>
+        {% endfor %}
+
+        <form method="post" enctype="multipart/form-data">
+            <div>
+                <label for="photos">Ajouter des photos (JPEG ou PNG)</label>
+                <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" multiple required>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('submit') }}">
+            <button type="submit">Importer</button>
+        </form>
+
+        <div class="grille-photos">
+            {% for photo in photos %}
+                <figure>
+                    <img src="{{ path('admin_photo_miniature', { id: photo.id }) }}" alt="{{ photo.nomOriginal }}" loading="lazy">
+                    <figcaption>
+                        {{ photo.nomOriginal }}
+                        <form method="post" action="{{ path('admin_photo_suppression', { id: photo.id }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('suppression' ~ photo.id) }}">
+                            <button type="submit" onclick="return confirm('Supprimer cette photo ?')">Supprimer</button>
+                        </form>
+                    </figcaption>
+                </figure>
+            {% else %}
+                <p>Aucune photo pour l'instant.</p>
+            {% endfor %}
+        </div>
+
+        <p><a href="{{ path('admin_evenements') }}">Retour à la liste des événements</a></p>
+    </div>
+{% endblock %}
