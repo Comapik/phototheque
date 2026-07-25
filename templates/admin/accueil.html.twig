@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+    <div class="page page--large">
+        {% for message in app.flashes('success') %}
+            <p>{{ message }}</p>
+        {% endfor %}
+        {% for message in app.flashes('erreur') %}
+            <p class="erreur">{{ message }}</p>
+        {% endfor %}
+
+        <div class="grille-formulaires">
+            <section>
+                <h1>Nouvel événement</h1>
+                {{ form_start(formEvenement, { action: path('admin_evenement_nouveau') }) }}
+                    {{ form_row(formEvenement.nom) }}
+                    {{ form_row(formEvenement.date) }}
+                    {{ form_row(formEvenement.description) }}
+                    {{ form_row(formEvenement.slug) }}
+
+                    <div>
+                        <label>{{ formEvenement.clients.vars.label }}</label>
+                        <div class="checkbox-list">
+                            {% for choix in formEvenement.clients %}
+                                <label>{{ form_widget(choix) }} {{ choix.vars.label }}</label>
+                            {% else %}
+                                <p>Aucun client pour l'instant.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit">Créer l'événement</button>
+                {{ form_end(formEvenement) }}
+            </section>
+
+            <section>
+                <h1>Nouveau client</h1>
+                {{ form_start(formClient, { action: path('admin_client_nouveau') }) }}
+                    {{ form_row(formClient.nom) }}
+                    {{ form_row(formClient.codeAcces) }}
+
+                    <div>
+                        <label>{{ formClient.evenements.vars.label }}</label>
+                        <div class="checkbox-list">
+                            {% for choix in formClient.evenements %}
+                                <label>{{ form_widget(choix) }} {{ choix.vars.label }}</label>
+                            {% else %}
+                                <p>Aucun événement pour l'instant.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit">Créer le client</button>
+                {{ form_end(formClient) }}
+            </section>
+        </div>
+
+        <h1>Événements</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date</th>
+                    <th>Photos</th>
+                    <th>Clients</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evenement in evenements %}
+                    <tr>
+                        <td>{{ evenement.nom }}</td>
+                        <td>{{ evenement.date|date('d/m/Y') }}</td>
+                        <td>{{ evenement.photos|length }}</td>
+                        <td>{{ evenement.clients|map(c => c.nom)|join(', ') }}</td>
+                        <td>
+                            <a href="{{ path('admin_evenement_photos', { id: evenement.id }) }}">Photos</a>
+                            <a href="{{ path('admin_evenement_edition', { id: evenement.id }) }}">Modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">Aucun événement pour l'instant.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><a href="{{ path('admin_clients') }}">Gérer les clients</a> · <a href="{{ path('admin_deconnexion') }}">Se déconnecter</a></p>
+    </div>
+{% endblock %}

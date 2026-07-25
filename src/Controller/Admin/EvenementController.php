@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\AccesClient;
 use App\Entity\Evenement;
 use App\Form\EvenementType;
-use App\Repository\EvenementRepository;
 use App\Repository\PhotoRepository;
 use App\Service\ImageProcessor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,14 +19,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[IsGranted('ROLE_ADMIN')]
 class EvenementController extends AbstractController
 {
-    #[Route('/admin/evenements', name: 'admin_evenements', methods: ['GET'])]
-    public function index(EvenementRepository $evenementRepository): Response
-    {
-        return $this->render('admin/evenement/index.html.twig', [
-            'evenements' => $evenementRepository->findBy([], ['date' => 'DESC']),
-        ]);
-    }
-
     #[Route('/admin/evenements/nouveau', name: 'admin_evenement_nouveau', methods: ['GET', 'POST'])]
     public function nouveau(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
@@ -98,7 +89,7 @@ class EvenementController extends AbstractController
 
             $this->addFlash('success', 'Événement mis à jour.');
 
-            return $this->redirectToRoute('admin_evenements');
+            return $this->redirectToRoute('admin_accueil');
         }
 
         return $this->render('admin/evenement/form.html.twig', [

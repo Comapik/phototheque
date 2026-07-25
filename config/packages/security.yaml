@@ -28,7 +28,7 @@ security:
                 login_path: admin_connexion
                 check_path: admin_connexion
                 enable_csrf: true
-                default_target_path: admin_clients
+                default_target_path: admin_accueil
             logout:
                 path: admin_deconnexion
                 target: admin_connexion
