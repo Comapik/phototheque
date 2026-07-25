@@ -14,16 +14,7 @@
                 <div class="alerte alerte--erreur">{{ erreur.messageKey|trans(erreur.messageData, 'security') }}</div>
             {% endif %}
 
-            <form method="post" action="{{ path('client_connexion') }}">
-                <div class="champ">
-                    <label for="code">Code d'accès</label>
-                    <input type="password" id="code" name="code" required autofocus autocomplete="off" inputmode="text">
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('client_connexion') }}">
-
-                <button type="submit" class="bouton--pleine-largeur">Voir mes photos</button>
-            </form>
+            {% include 'galerie/_formulaire_code.html.twig' %}
         </div>
     </div>
 {% endblock %}

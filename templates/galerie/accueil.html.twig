@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comapik — Vos photos en ligne{% endblock %}
+
+{% block body %}
+    <div class="ecran-connexion">
+        <div class="carte">
+            <div class="ecran-connexion__marque">
+                <strong>Comapik</strong>
+            </div>
+            <h1>Vos photos, en ligne</h1>
+            <p class="ecran-connexion__texte">
+                Après votre événement, retrouvez ici vos photos à consulter et
+                télécharger, grâce au code d'accès fourni par votre photographe.
+            </p>
+
+            {% include 'galerie/_formulaire_code.html.twig' %}
+        </div>
+
+        <p class="ecran-connexion__pied"><a href="{{ path('admin_connexion') }}">Espace photographe</a></p>
+    </div>
+{% endblock %}
