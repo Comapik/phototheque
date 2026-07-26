@@ -1,4 +1,8 @@
-# Enable stateless CSRF protection for forms and logins/logouts
+# Enable stateless CSRF protection for logins/logouts. "submit" (formulaires
+# classiques, dont l'upload admin) reste en CSRF "stateful" (session) : le
+# mécanisme "stateless" dépend de la détection correcte du HTTPS derrière le
+# proxy d'hébergement, ce qui a posé problème en prod sur le formulaire
+# d'upload (cf. le formulaire client, non stateless, qui lui fonctionne).
 framework:
     form:
         csrf_protection:
@@ -6,7 +10,6 @@ framework:
 
     csrf_protection:
         stateless_token_ids:
-            - submit
             - authenticate
             - logout
             - client_connexion

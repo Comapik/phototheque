@@ -2,6 +2,13 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    # Sur un hébergement mutualisé, le HTTPS est généralement terminé par un
+    # proxy (Apache) devant PHP : sans ça, Symfony peut se tromper sur le
+    # protocole réel de la requête (impacte notamment la protection CSRF
+    # "same-origin", cf. SameOriginCsrfTokenManager).
+    trusted_proxies: '127.0.0.1,::1'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
