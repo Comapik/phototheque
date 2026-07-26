@@ -14,10 +14,10 @@
         {% include '_flashes.html.twig' %}
 
         <div class="carte">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" data-controller="redimensionnement" data-action="submit->redimensionnement#soumettre">
                 <div class="champ">
                     <label for="photos">Ajouter des photos (JPEG ou PNG)</label>
-                    <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" multiple required>
+                    <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" multiple required data-redimensionnement-target="fichier">
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('submit') }}">
                 <button type="submit">Importer</button>

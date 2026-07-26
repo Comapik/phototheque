@@ -22,10 +22,10 @@
             <div class="carte carte--accent">
                 <h2>Ajouter vos photos</h2>
                 <p class="help-text">Partagez vos photos de l'événement (JPEG ou PNG), depuis votre téléphone ou votre ordinateur.</p>
-                <form method="post" action="{{ path('client_evenement_upload', { id: evenement.id }) }}" enctype="multipart/form-data">
+                <form method="post" action="{{ path('client_evenement_upload', { id: evenement.id }) }}" enctype="multipart/form-data" data-controller="redimensionnement" data-action="submit->redimensionnement#soumettre">
                     <div class="champ">
                         <label for="photos">Photos à ajouter</label>
-                        <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" capture="environment" multiple required>
+                        <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" capture="environment" multiple required data-redimensionnement-target="fichier">
                     </div>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('upload') }}">
                     <button type="submit" class="bouton--pleine-largeur">Envoyer</button>
