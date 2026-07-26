@@ -24,19 +24,31 @@
             </form>
         </div>
 
-        <h2>Photos du photographe</h2>
-        {% include 'admin/evenement/_grille_photos.html.twig' with {
-            photos: photosPhotographe,
-            vide: "Aucune photo pour l'instant. Ajoute les premières ci-dessus.",
-        } %}
+        <form method="post" action="{{ path('admin_photos_suppression_groupee', { id: evenement.id }) }}" data-turbo="false">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('suppression_groupee') }}">
 
-        {% if evenement.uploadClientAutorise or photosClients is not empty %}
-            <h2>Photos ajoutées par les clients</h2>
+            {% if photosPhotographe is not empty or photosClients is not empty %}
+                <p>
+                    <button type="submit" class="bouton--danger bouton--petit" onclick="return confirm('Supprimer les photos sélectionnées ?')">
+                        Supprimer la sélection
+                    </button>
+                </p>
+            {% endif %}
+
+            <h2>Photos du photographe</h2>
             {% include 'admin/evenement/_grille_photos.html.twig' with {
-                photos: photosClients,
-                vide: 'Aucune photo ajoutée par un client pour l\'instant.',
+                photos: photosPhotographe,
+                vide: "Aucune photo pour l'instant. Ajoute les premières ci-dessus.",
             } %}
-        {% endif %}
+
+            {% if evenement.uploadClientAutorise or photosClients is not empty %}
+                <h2>Photos ajoutées par les clients</h2>
+                {% include 'admin/evenement/_grille_photos.html.twig' with {
+                    photos: photosClients,
+                    vide: 'Aucune photo ajoutée par un client pour l\'instant.',
+                } %}
+            {% endif %}
+        </form>
     </div>
 
     {% include '_visionneuse.html.twig' %}

@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Evenement;
 use App\Entity\Photo;
+use App\Repository\PhotoRepository;
 use App\Service\ImageProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,18 +42,38 @@ class PhotoController extends AbstractController
         return $response;
     }
 
-    #[Route('/admin/photos/{id}/suppression', name: 'admin_photo_suppression', methods: ['POST'])]
-    public function suppression(Photo $photo, Request $request, EntityManagerInterface $em, ImageProcessor $imageProcessor): Response
-    {
-        $evenementId = $photo->getEvenement()->getId();
-
-        if ($this->isCsrfTokenValid('suppression'.$photo->getId(), $request->request->get('_token'))) {
-            $imageProcessor->supprimerFichiers($photo);
-            $em->remove($photo);
-            $em->flush();
-            $this->addFlash('success', 'Photo supprimée.');
+    #[Route('/admin/evenements/{id}/photos/suppression-groupee', name: 'admin_photos_suppression_groupee', methods: ['POST'])]
+    public function suppressionGroupee(
+        Evenement $evenement,
+        Request $request,
+        EntityManagerInterface $em,
+        PhotoRepository $photoRepository,
+        ImageProcessor $imageProcessor,
+    ): Response {
+        if (!$this->isCsrfTokenValid('suppression_groupee', $request->request->get('_csrf_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
-        return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenementId]);
+        $ids = array_map('intval', $request->request->all('photos'));
+
+        if ([] === $ids) {
+            $this->addFlash('erreur', 'Aucune photo sélectionnée.');
+
+            return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
+        }
+
+        // Filtre par événement : une photo ne peut être supprimée que si elle
+        // appartient bien à l'événement de la page depuis laquelle on agit.
+        $photos = $photoRepository->findBy(['id' => $ids, 'evenement' => $evenement]);
+
+        foreach ($photos as $photo) {
+            $imageProcessor->supprimerFichiers($photo);
+            $em->remove($photo);
+        }
+        $em->flush();
+
+        $this->addFlash('success', sprintf('%d photo(s) supprimée(s).', count($photos)));
+
+        return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
     }
 }

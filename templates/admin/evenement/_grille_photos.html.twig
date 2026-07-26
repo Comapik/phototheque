@@ -5,19 +5,16 @@
         {% for photo in photos %}
             <li>
                 <figure>
+                    <label class="case-selection">
+                        <input type="checkbox" name="photos[]" value="{{ photo.id }}">
+                    </label>
                     <button type="button" class="photo-vignette" data-visionneuse
                             data-src="{{ path('admin_photo_apercu', { id: photo.id }) }}"
                             data-nom="{{ photo.nomOriginal }}">
                         <img src="{{ path('admin_photo_miniature', { id: photo.id }) }}" alt="{{ photo.nomOriginal }}" loading="lazy">
                     </button>
                     <figcaption>
-                        <div class="ligne">
-                            <span class="nom-fichier">{{ photo.nomOriginal }}</span>
-                            <form method="post" action="{{ path('admin_photo_suppression', { id: photo.id }) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('suppression' ~ photo.id) }}">
-                                <button type="submit" class="bouton--danger bouton--petit" onclick="return confirm('Supprimer cette photo ?')">Suppr.</button>
-                            </form>
-                        </div>
+                        <span class="nom-fichier">{{ photo.nomOriginal }}</span>
                         {% if photo.prenomUploadeur %}
                             <span class="etiquette-auteur">Ajoutée par {{ photo.prenomUploadeur }}</span>
                         {% endif %}

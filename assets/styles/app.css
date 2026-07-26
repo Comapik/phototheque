@@ -639,19 +639,31 @@ td.cellule-discrete {
     margin-top: 0.4rem;
 }
 
-.grille-photos figcaption .ligne {
+.grille-photos .nom-fichier {
+    display: block;
     font-size: 0.78rem;
     color: var(--texte-discret);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.4rem;
-}
-
-.grille-photos .nom-fichier {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.case-selection {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    z-index: 1;
+    display: flex;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: var(--radius-sm);
+    line-height: 0;
+}
+
+.case-selection input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
 }
 
 .etiquette-auteur {
