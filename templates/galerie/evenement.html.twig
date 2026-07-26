@@ -35,34 +35,42 @@
 
         {% if photosPhotographe is empty and photosClients is empty %}
             <p class="etat-vide">Aucune photo n'a encore été ajoutée pour cet événement.</p>
-        {% elseif evenement.uploadClientAutorise or photosClients is not empty %}
-            <div class="onglets" role="tablist">
-                <button type="button" class="onglet" role="tab" aria-selected="{{ ongletActif == 'photographe' ? 'true' : 'false' }}" aria-controls="onglet-photographe" data-onglet="photographe">
-                    Photographe ({{ photosPhotographe|length }})
-                </button>
-                <button type="button" class="onglet" role="tab" aria-selected="{{ ongletActif == 'invites' ? 'true' : 'false' }}" aria-controls="onglet-invites" data-onglet="invites">
-                    Invités ({{ photosClients|length }})
-                </button>
-            </div>
-
-            <div id="onglet-photographe" class="onglet-panel" role="tabpanel" data-onglet-panel="photographe"{{ ongletActif != 'photographe' ? ' hidden' : '' }}>
-                {% include 'galerie/_grille_photos.html.twig' with {
-                    photos: photosPhotographe,
-                    vide: "Aucune photo du photographe pour l'instant.",
-                } %}
-            </div>
-
-            <div id="onglet-invites" class="onglet-panel" role="tabpanel" data-onglet-panel="invites"{{ ongletActif != 'invites' ? ' hidden' : '' }}>
-                {% include 'galerie/_grille_photos.html.twig' with {
-                    photos: photosClients,
-                    vide: "Aucune photo ajoutée par les invités pour l'instant.",
-                } %}
-            </div>
         {% else %}
-            {% include 'galerie/_grille_photos.html.twig' with {
-                photos: photosPhotographe,
-                vide: "Aucune photo du photographe pour l'instant.",
-            } %}
+            <form method="post" action="{{ path('client_photos_telechargement_groupe', { id: evenement.id }) }}" data-turbo="false">
+                <p class="actions-selection">
+                    <button type="submit" class="bouton bouton--secondaire bouton--petit">Télécharger la sélection</button>
+                </p>
+
+                {% if evenement.uploadClientAutorise or photosClients is not empty %}
+                    <div class="onglets" role="tablist">
+                        <button type="button" class="onglet" role="tab" aria-selected="{{ ongletActif == 'photographe' ? 'true' : 'false' }}" aria-controls="onglet-photographe" data-onglet="photographe">
+                            Photographe ({{ photosPhotographe|length }})
+                        </button>
+                        <button type="button" class="onglet" role="tab" aria-selected="{{ ongletActif == 'invites' ? 'true' : 'false' }}" aria-controls="onglet-invites" data-onglet="invites">
+                            Invités ({{ photosClients|length }})
+                        </button>
+                    </div>
+
+                    <div id="onglet-photographe" class="onglet-panel" role="tabpanel" data-onglet-panel="photographe"{{ ongletActif != 'photographe' ? ' hidden' : '' }}>
+                        {% include 'galerie/_grille_photos.html.twig' with {
+                            photos: photosPhotographe,
+                            vide: "Aucune photo du photographe pour l'instant.",
+                        } %}
+                    </div>
+
+                    <div id="onglet-invites" class="onglet-panel" role="tabpanel" data-onglet-panel="invites"{{ ongletActif != 'invites' ? ' hidden' : '' }}>
+                        {% include 'galerie/_grille_photos.html.twig' with {
+                            photos: photosClients,
+                            vide: "Aucune photo ajoutée par les invités pour l'instant.",
+                        } %}
+                    </div>
+                {% else %}
+                    {% include 'galerie/_grille_photos.html.twig' with {
+                        photos: photosPhotographe,
+                        vide: "Aucune photo du photographe pour l'instant.",
+                    } %}
+                {% endif %}
+            </form>
         {% endif %}
     </div>
 

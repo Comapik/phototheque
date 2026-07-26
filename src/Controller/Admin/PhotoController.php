@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Evenement;
 use App\Entity\Photo;
 use App\Repository\PhotoRepository;
+use App\Service\ArchivePhotos;
 use App\Service\ImageProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,5 +76,31 @@ class PhotoController extends AbstractController
         $this->addFlash('success', sprintf('%d photo(s) supprimée(s).', count($photos)));
 
         return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
+    }
+
+    #[Route('/admin/evenements/{id}/photos/telechargement-groupe', name: 'admin_photos_telechargement_groupe', methods: ['POST'])]
+    public function telechargementGroupe(
+        Evenement $evenement,
+        Request $request,
+        PhotoRepository $photoRepository,
+        ArchivePhotos $archivePhotos,
+    ): Response {
+        $ids = array_map('intval', $request->request->all('photos'));
+
+        if ([] === $ids) {
+            $this->addFlash('erreur', 'Aucune photo sélectionnée.');
+
+            return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
+        }
+
+        $photos = $photoRepository->findBy(['id' => $ids, 'evenement' => $evenement]);
+
+        if ([] === $photos) {
+            throw $this->createNotFoundException();
+        }
+
+        $chemin = $archivePhotos->creerZip($photos);
+
+        return $this->file($chemin, sprintf('%s-photos.zip', $evenement->getSlug()))->deleteFileAfterSend();
     }
 }

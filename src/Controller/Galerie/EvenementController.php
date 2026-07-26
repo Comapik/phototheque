@@ -8,6 +8,7 @@ use App\Entity\Photo;
 use App\Repository\EvenementRepository;
 use App\Repository\PhotoRepository;
 use App\Security\PrenomSession;
+use App\Service\ArchivePhotos;
 use App\Service\ImageProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,33 @@ class EvenementController extends AbstractController
             'photosClients' => array_filter($photos, static fn (Photo $photo): bool => $photo->estAjouteeParClient()),
             'ongletActif' => 'invites' === $request->query->get('onglet') ? 'invites' : 'photographe',
         ]);
+    }
+
+    #[Route('/evenements/{id}/telechargement-groupe', name: 'client_photos_telechargement_groupe', methods: ['POST'])]
+    #[IsGranted('EVENEMENT_VOIR', subject: 'evenement')]
+    public function telechargementGroupe(
+        Evenement $evenement,
+        Request $request,
+        PhotoRepository $photoRepository,
+        ArchivePhotos $archivePhotos,
+    ): Response {
+        $ids = array_map('intval', $request->request->all('photos'));
+
+        if ([] === $ids) {
+            $this->addFlash('erreur', 'Aucune photo sélectionnée.');
+
+            return $this->redirectToRoute('client_evenement_voir', ['id' => $evenement->getId()]);
+        }
+
+        $photos = $photoRepository->findBy(['id' => $ids, 'evenement' => $evenement]);
+
+        if ([] === $photos) {
+            throw $this->createNotFoundException();
+        }
+
+        $chemin = $archivePhotos->creerZip($photos);
+
+        return $this->file($chemin, sprintf('%s-photos.zip', $evenement->getSlug()))->deleteFileAfterSend();
     }
 
     #[Route('/evenements/{id}/upload', name: 'client_evenement_upload', methods: ['POST'])]

@@ -648,6 +648,12 @@ td.cellule-discrete {
     white-space: nowrap;
 }
 
+.actions-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .case-selection {
     position: absolute;
     top: 0.4rem;

@@ -5,6 +5,9 @@
         {% for photo in photos %}
             <li>
                 <figure>
+                    <label class="case-selection">
+                        <input type="checkbox" name="photos[]" value="{{ photo.id }}">
+                    </label>
                     <button type="button" class="photo-vignette" data-visionneuse
                             data-src="{{ path('client_photo_apercu', { id: photo.id }) }}"
                             data-nom="{{ photo.nomOriginal }}"
