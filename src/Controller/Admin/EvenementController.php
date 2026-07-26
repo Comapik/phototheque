@@ -185,4 +185,26 @@ class EvenementController extends AbstractController
             'photosClients' => array_filter($photos, static fn (Photo $photo): bool => $photo->estAjouteeParClient()),
         ]);
     }
+
+    #[Route('/admin/evenements/{id}/suppression', name: 'admin_evenement_suppression', methods: ['POST'])]
+    public function suppression(Evenement $evenement, Request $request, EntityManagerInterface $em, ImageProcessor $imageProcessor): Response
+    {
+        if (!$this->isCsrfTokenValid('suppression_evenement'.$evenement->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException('Jeton CSRF invalide.');
+        }
+
+        $nom = $evenement->getNom();
+
+        foreach ($evenement->getPhotos() as $photo) {
+            $imageProcessor->supprimerFichiers($photo);
+        }
+
+        // Les photos et accès clients liés sont supprimés en cascade (cf. Evenement).
+        $em->remove($evenement);
+        $em->flush();
+
+        $this->addFlash('success', sprintf('Événement "%s" et ses photos supprimés.', $nom));
+
+        return $this->redirectToRoute('admin_accueil');
+    }
 }

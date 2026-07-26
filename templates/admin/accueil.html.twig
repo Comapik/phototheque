@@ -86,6 +86,12 @@
                                     <div class="actions">
                                         <a class="bouton bouton--secondaire bouton--petit" href="{{ path('admin_evenement_photos', { id: evenement.id }) }}">Photos</a>
                                         <a class="bouton bouton--secondaire bouton--petit" href="{{ path('admin_evenement_edition', { id: evenement.id }) }}">Modifier</a>
+                                        <form method="post" action="{{ path('admin_evenement_suppression', { id: evenement.id }) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('suppression_evenement' ~ evenement.id) }}">
+                                            <button type="submit" class="bouton--danger bouton--petit" onclick="return confirm('Supprimer l\'événement « {{ evenement.nom|e('js') }} » et ses {{ evenement.photos|length }} photo(s) ? Cette action est irréversible.')">
+                                                Supprimer
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

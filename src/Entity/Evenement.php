@@ -44,14 +44,14 @@ class Evenement
     /**
      * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'evenement', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'evenement', cascade: ['remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['ordre' => 'ASC'])]
     private Collection $photos;
 
     /**
      * @var Collection<int, AccesClient>
      */
-    #[ORM\OneToMany(targetEntity: AccesClient::class, mappedBy: 'evenement', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AccesClient::class, mappedBy: 'evenement', cascade: ['remove'], orphanRemoval: true)]
     private Collection $accesClients;
 
     public function __construct()
