@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre prénom{% endblock %}
+
+{% block body %}
+    <div class="ecran-connexion">
+        <div class="carte">
+            <div class="ecran-connexion__marque">
+                <strong>Comapik</strong>
+            </div>
+            <h1>Qui êtes-vous ?</h1>
+            <p class="help-text">Votre prénom permet de savoir qui a ajouté quelles photos.</p>
+
+            {% include '_flashes.html.twig' %}
+
+            <form method="post" action="{{ path('client_prenom') }}">
+                <div class="champ">
+                    <label for="prenom">Votre prénom</label>
+                    <input type="text" id="prenom" name="prenom" required autofocus autocomplete="given-name" maxlength="100">
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('client_prenom') }}">
+
+                <button type="submit" class="bouton--pleine-largeur">Continuer</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

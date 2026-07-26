@@ -51,6 +51,13 @@ class Photo
     #[ORM\Column(length: 20, options: ['default' => self::ORIGINE_PHOTOGRAPHE])]
     private string $origine = self::ORIGINE_PHOTOGRAPHE;
 
+    /**
+     * Prénom saisi par le client lors de sa connexion, pour retrouver
+     * facilement l'auteur d'une photo ajoutée par un invité (cf. Photo::$origine).
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $prenomUploadeur = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -179,6 +186,18 @@ class Photo
     public function estAjouteeParClient(): bool
     {
         return self::ORIGINE_CLIENT === $this->origine;
+    }
+
+    public function getPrenomUploadeur(): ?string
+    {
+        return $this->prenomUploadeur;
+    }
+
+    public function setPrenomUploadeur(?string $prenomUploadeur): static
+    {
+        $this->prenomUploadeur = $prenomUploadeur;
+
+        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

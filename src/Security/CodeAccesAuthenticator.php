@@ -18,7 +18,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * Authentifie un Client à partir d'un simple code d'accès (pas d'identifiant),
@@ -28,8 +27,6 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
  */
 class CodeAccesAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    use TargetPathTrait;
-
     public const LOGIN_ROUTE = 'client_connexion';
 
     public function __construct(
@@ -74,11 +71,10 @@ class CodeAccesAuthenticator extends AbstractAuthenticator implements Authentica
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
-
-        return new RedirectResponse($this->urlGenerator->generate('client_mes_evenements'));
+        // Le prénom est redemandé à chaque connexion : un code d'accès étant
+        // partagé, il permet de savoir qui, parmi les personnes qui le
+        // partagent, ajoute quelles photos (cf. PrenomController).
+        return new RedirectResponse($this->urlGenerator->generate('client_prenom'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

@@ -12,6 +12,9 @@
                         <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
                     </button>
                     <figcaption>
+                        {% if photo.prenomUploadeur %}
+                            <span class="etiquette-auteur">Ajoutée par {{ photo.prenomUploadeur }}</span>
+                        {% endif %}
                         <a class="bouton bouton--petit bouton--pleine-largeur" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
                     </figcaption>
                 </figure>

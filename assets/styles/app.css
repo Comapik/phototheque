@@ -654,6 +654,16 @@ td.cellule-discrete {
     white-space: nowrap;
 }
 
+.etiquette-auteur {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--texte-discret);
+    margin-bottom: 0.3rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* ---------- Visionneuse (lightbox) ---------- */
 
 dialog.visionneuse {
