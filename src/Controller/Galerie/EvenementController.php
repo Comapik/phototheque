@@ -55,14 +55,26 @@ class EvenementController extends AbstractController
         PhotoRepository $photoRepository,
         ImageProcessor $imageProcessor,
     ): Response {
+        // Un gros volume de photos est envoyé par le navigateur en plusieurs
+        // lots successifs (cf. redimensionnement_controller.js) : seul le
+        // dernier lot est une vraie soumission de formulaire (redirection,
+        // messages). Les lots intermédiaires reçoivent une réponse légère.
+        $estLotIntermediaire = 'intermediaire' === $request->headers->get('X-Upload-Lot');
+
         // Si le serveur a rejeté la requête car elle dépasse post_max_size, PHP vide
         // silencieusement $_POST et $_FILES : le jeton CSRF semble alors "invalide"
         // alors que le vrai problème est la taille des photos envoyées.
         if (0 === $request->request->count() && 0 === $request->files->count() && $request->headers->get('Content-Length') > 0) {
-            $this->addFlash('erreur', sprintf(
+            $message = sprintf(
                 'Les photos envoyées sont trop volumineuses pour le serveur (limite actuelle : %s). Réessayez avec moins de photos à la fois.',
                 ini_get('post_max_size')
-            ));
+            );
+
+            if ($estLotIntermediaire) {
+                return $this->json(['importees' => 0, 'erreurs' => [$message]], 413);
+            }
+
+            $this->addFlash('erreur', $message);
 
             return $this->redirectToRoute('client_evenement_voir', ['id' => $evenement->getId(), 'onglet' => 'invites']);
         }
@@ -99,6 +111,10 @@ class EvenementController extends AbstractController
         }
 
         $em->flush();
+
+        if ($estLotIntermediaire) {
+            return $this->json(['importees' => $nbImportees, 'erreurs' => $erreurs]);
+        }
 
         if ($nbImportees > 0) {
             $this->addFlash('success', sprintf('%d photo(s) ajoutée(s). Merci !', $nbImportees));
