@@ -17,6 +17,8 @@
             {% include 'galerie/_formulaire_code.html.twig' %}
         </div>
 
-        <p class="ecran-connexion__pied"><a href="{{ path('admin_connexion') }}">Espace photographe</a></p>
+        <p class="ecran-connexion__pied">
+            <a href="{{ path('contact') }}">Contact</a> · <a href="{{ path('admin_connexion') }}">Espace photographe</a>
+        </p>
     </div>
 {% endblock %}

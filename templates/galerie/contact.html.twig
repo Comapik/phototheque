@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact — Comapik{% endblock %}
+
+{% block body %}
+    {% if estClient %}
+        {% include 'galerie/_nav.html.twig' %}
+    {% endif %}
+
+    <div class="page">
+        {% if not estClient %}
+            <p><a class="bouton bouton--secondaire bouton--petit" href="{{ path('accueil') }}">← Accueil</a></p>
+        {% endif %}
+
+        <h1>Contact</h1>
+
+        <div class="carte">
+            <h2>Nous contacter</h2>
+            <p>
+                <a href="mailto:allan.martin@comapik.fr">allan.martin@comapik.fr</a><br>
+                <a href="tel:+33629690622">06 29 69 06 22</a>
+            </p>
+        </div>
+
+        <div class="carte">
+            <h2>Vos photos en objets personnalisés</h2>
+            <p>
+                Toutes les photos peuvent être imprimées dans tous les formats,
+                ainsi qu'en objets personnalisés : mug, magnet, marque-page,
+                carreau de faïence, tee-shirt...
+            </p>
+            <p>Fabriqués dans notre atelier, en Normandie.</p>
+        </div>
+    </div>
+{% endblock %}
