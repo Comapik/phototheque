@@ -7,6 +7,7 @@ use App\Entity\Evenement;
 use App\Entity\Photo;
 use App\Repository\EvenementRepository;
 use App\Repository\PhotoRepository;
+use App\Security\PrenomSession;
 use App\Service\ImageProcessor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +34,7 @@ class EvenementController extends AbstractController
 
     #[Route('/evenements/{id}', name: 'client_evenement_voir', methods: ['GET'])]
     #[IsGranted('EVENEMENT_VOIR', subject: 'evenement')]
-    public function voir(Evenement $evenement, PhotoRepository $photoRepository): Response
+    public function voir(Evenement $evenement, PhotoRepository $photoRepository, Request $request): Response
     {
         $photos = $photoRepository->findBy(['evenement' => $evenement], ['ordre' => 'ASC']);
 
@@ -41,6 +42,7 @@ class EvenementController extends AbstractController
             'evenement' => $evenement,
             'photosPhotographe' => array_filter($photos, static fn (Photo $photo): bool => !$photo->estAjouteeParClient()),
             'photosClients' => array_filter($photos, static fn (Photo $photo): bool => $photo->estAjouteeParClient()),
+            'ongletActif' => 'invites' === $request->query->get('onglet') ? 'invites' : 'photographe',
         ]);
     }
 
@@ -53,22 +55,41 @@ class EvenementController extends AbstractController
         PhotoRepository $photoRepository,
         ImageProcessor $imageProcessor,
     ): Response {
+        // Si le serveur a rejeté la requête car elle dépasse post_max_size, PHP vide
+        // silencieusement $_POST et $_FILES : le jeton CSRF semble alors "invalide"
+        // alors que le vrai problème est la taille des photos envoyées.
+        if (0 === $request->request->count() && 0 === $request->files->count() && $request->headers->get('Content-Length') > 0) {
+            $this->addFlash('erreur', sprintf(
+                'Les photos envoyées sont trop volumineuses pour le serveur (limite actuelle : %s). Réessayez avec moins de photos à la fois.',
+                ini_get('post_max_size')
+            ));
+
+            return $this->redirectToRoute('client_evenement_voir', ['id' => $evenement->getId(), 'onglet' => 'invites']);
+        }
+
         if (!$this->isCsrfTokenValid('upload', $request->request->get('_csrf_token'))) {
             throw $this->createAccessDeniedException('Jeton CSRF invalide.');
         }
 
         $fichiers = $request->files->get('photos', []);
         $ordre = $photoRepository->prochainOrdre($evenement);
+        $prenomUploadeur = PrenomSession::get($request);
         $nbImportees = 0;
         $erreurs = [];
 
         foreach ($fichiers as $fichier) {
-            if (!$fichier instanceof UploadedFile || !$fichier->isValid()) {
+            if (!$fichier instanceof UploadedFile) {
+                continue;
+            }
+
+            if (!$fichier->isValid()) {
+                $erreurs[] = sprintf('"%s" n\'a pas pu être envoyée (%s).', $fichier->getClientOriginalName(), $fichier->getErrorMessage());
                 continue;
             }
 
             try {
                 $photo = $imageProcessor->traiter($fichier, $evenement, $ordre, Photo::ORIGINE_CLIENT);
+                $photo->setPrenomUploadeur($prenomUploadeur);
                 $em->persist($photo);
                 ++$ordre;
                 ++$nbImportees;
@@ -86,6 +107,6 @@ class EvenementController extends AbstractController
             $this->addFlash('erreur', $erreur);
         }
 
-        return $this->redirectToRoute('client_evenement_voir', ['id' => $evenement->getId()]);
+        return $this->redirectToRoute('client_evenement_voir', ['id' => $evenement->getId(), 'onglet' => 'invites']);
     }
 }
