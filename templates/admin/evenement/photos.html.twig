@@ -14,7 +14,7 @@
         {% include '_flashes.html.twig' %}
 
         <div class="carte">
-            <form method="post" enctype="multipart/form-data" data-controller="redimensionnement" data-action="submit->redimensionnement#soumettre">
+            <form method="post" enctype="multipart/form-data" data-turbo="false" data-controller="redimensionnement" data-action="submit->redimensionnement#soumettre">
                 <div class="champ">
                     <label for="photos">Ajouter des photos (JPEG ou PNG)</label>
                     <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" multiple required data-redimensionnement-target="fichier">
