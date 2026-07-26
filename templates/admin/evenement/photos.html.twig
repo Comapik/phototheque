@@ -24,31 +24,18 @@
             </form>
         </div>
 
-        {% if photos is empty %}
-            <p class="etat-vide">Aucune photo pour l'instant. Ajoute les premières ci-dessus.</p>
-        {% else %}
-            <ul class="grille-photos">
-                {% for photo in photos %}
-                    <li>
-                        <figure>
-                            <button type="button" class="photo-vignette" data-visionneuse
-                                    data-src="{{ path('admin_photo_apercu', { id: photo.id }) }}"
-                                    data-nom="{{ photo.nomOriginal }}">
-                                <img src="{{ path('admin_photo_miniature', { id: photo.id }) }}" alt="{{ photo.nomOriginal }}" loading="lazy">
-                            </button>
-                            <figcaption>
-                                <div class="ligne">
-                                    <span class="nom-fichier">{{ photo.nomOriginal }}</span>
-                                    <form method="post" action="{{ path('admin_photo_suppression', { id: photo.id }) }}">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('suppression' ~ photo.id) }}">
-                                        <button type="submit" class="bouton--danger bouton--petit" onclick="return confirm('Supprimer cette photo ?')">Suppr.</button>
-                                    </form>
-                                </div>
-                            </figcaption>
-                        </figure>
-                    </li>
-                {% endfor %}
-            </ul>
+        <h2>Photos du photographe</h2>
+        {% include 'admin/evenement/_grille_photos.html.twig' with {
+            photos: photosPhotographe,
+            vide: "Aucune photo pour l'instant. Ajoute les premières ci-dessus.",
+        } %}
+
+        {% if evenement.uploadClientAutorise or photosClients is not empty %}
+            <h2>Photos ajoutées par les clients</h2>
+            {% include 'admin/evenement/_grille_photos.html.twig' with {
+                photos: photosClients,
+                vide: 'Aucune photo ajoutée par un client pour l\'instant.',
+            } %}
         {% endif %}
     </div>
 

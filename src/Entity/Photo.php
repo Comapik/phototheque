@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PhotoRepository::class)]
 class Photo
 {
+    public const ORIGINE_PHOTOGRAPHE = 'photographe';
+    public const ORIGINE_CLIENT = 'client';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -40,6 +43,13 @@ class Photo
 
     #[ORM\Column]
     private int $ordre = 0;
+
+    /**
+     * Distingue les photos du photographe de celles ajoutées par les clients
+     * (cf. Evenement::$uploadClientAutorise).
+     */
+    #[ORM\Column(length: 20, options: ['default' => self::ORIGINE_PHOTOGRAPHE])]
+    private string $origine = self::ORIGINE_PHOTOGRAPHE;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -152,6 +162,23 @@ class Photo
         $this->ordre = $ordre;
 
         return $this;
+    }
+
+    public function getOrigine(): string
+    {
+        return $this->origine;
+    }
+
+    public function setOrigine(string $origine): static
+    {
+        $this->origine = $origine;
+
+        return $this;
+    }
+
+    public function estAjouteeParClient(): bool
+    {
+        return self::ORIGINE_CLIENT === $this->origine;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable

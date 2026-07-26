@@ -16,26 +16,53 @@
             {% if evenement.description %} · {{ evenement.description }}{% endif %}
         </p>
 
-        {% if photos is empty %}
+        {% include '_flashes.html.twig' %}
+
+        {% if evenement.uploadClientAutorise %}
+            <div class="carte carte--accent">
+                <h2>Ajouter vos photos</h2>
+                <p class="help-text">Partagez vos photos de l'événement (JPEG ou PNG), depuis votre téléphone ou votre ordinateur.</p>
+                <form method="post" action="{{ path('client_evenement_upload', { id: evenement.id }) }}" enctype="multipart/form-data">
+                    <div class="champ">
+                        <label for="photos">Photos à ajouter</label>
+                        <input type="file" id="photos" name="photos[]" accept="image/jpeg,image/png" capture="environment" multiple required>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('upload') }}">
+                    <button type="submit" class="bouton--pleine-largeur">Envoyer</button>
+                </form>
+            </div>
+        {% endif %}
+
+        {% if photosPhotographe is empty and photosClients is empty %}
             <p class="etat-vide">Aucune photo n'a encore été ajoutée pour cet événement.</p>
+        {% elseif evenement.uploadClientAutorise or photosClients is not empty %}
+            <div class="onglets" role="tablist">
+                <button type="button" class="onglet" role="tab" aria-selected="true" aria-controls="onglet-photographe" data-onglet="photographe">
+                    Photographe ({{ photosPhotographe|length }})
+                </button>
+                <button type="button" class="onglet" role="tab" aria-selected="false" aria-controls="onglet-invites" data-onglet="invites">
+                    Invités ({{ photosClients|length }})
+                </button>
+            </div>
+
+            <div id="onglet-photographe" class="onglet-panel" role="tabpanel" data-onglet-panel="photographe">
+                {% include 'galerie/_grille_photos.html.twig' with {
+                    photos: photosPhotographe,
+                    vide: "Aucune photo du photographe pour l'instant.",
+                } %}
+            </div>
+
+            <div id="onglet-invites" class="onglet-panel" role="tabpanel" data-onglet-panel="invites" hidden>
+                {% include 'galerie/_grille_photos.html.twig' with {
+                    photos: photosClients,
+                    vide: "Aucune photo ajoutée par les invités pour l'instant.",
+                } %}
+            </div>
         {% else %}
-            <ul class="grille-photos">
-                {% for photo in photos %}
-                    <li>
-                        <figure>
-                            <button type="button" class="photo-vignette" data-visionneuse
-                                    data-src="{{ path('client_photo_apercu', { id: photo.id }) }}"
-                                    data-nom="{{ photo.nomOriginal }}"
-                                    data-telechargement="{{ path('client_photo_telechargement', { id: photo.id }) }}">
-                                <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
-                            </button>
-                            <figcaption>
-                                <a class="bouton bouton--petit bouton--pleine-largeur" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
-                            </figcaption>
-                        </figure>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% include 'galerie/_grille_photos.html.twig' with {
+                photos: photosPhotographe,
+                vide: "Aucune photo du photographe pour l'instant.",
+            } %}
         {% endif %}
     </div>
 

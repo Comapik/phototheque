@@ -348,6 +348,16 @@ input[type="file"] {
     box-shadow: var(--ombre-carte);
 }
 
+.carte--accent {
+    background: var(--accent-fond);
+    border-color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.carte--accent h2 {
+    margin: 0 0 0.5rem;
+}
+
 .grille-formulaires {
     display: grid;
     grid-template-columns: 1fr;
@@ -550,6 +560,41 @@ td.cellule-discrete {
     margin-top: 0.15rem;
 }
 
+/* ---------- Onglets (galerie client) ---------- */
+
+.onglets {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--bordure);
+    margin: 1.5rem 0 0;
+}
+
+.onglet {
+    background: none;
+    color: var(--texte-discret);
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    margin-bottom: -1px;
+    cursor: pointer;
+}
+
+.onglet:hover {
+    background: none;
+    color: var(--texte);
+}
+
+.onglet[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.onglet-panel[hidden] {
+    display: none;
+}
+
 /* ---------- Grille de photos ---------- */
 
 .grille-photos {
@@ -676,6 +721,37 @@ dialog.visionneuse::backdrop {
 
 .visionneuse__fermer:hover {
     background: rgba(20, 18, 16, 0.75);
+}
+
+.visionneuse__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(20, 18, 16, 0.55);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    border: none;
+}
+
+.visionneuse__nav:hover {
+    background: rgba(20, 18, 16, 0.75);
+}
+
+.visionneuse__nav--precedent {
+    left: 0.75rem;
+}
+
+.visionneuse__nav--suivant {
+    right: 0.75rem;
+}
+
+.visionneuse__nav[hidden] {
+    display: none;
 }
 
 /* ---------- Responsive ---------- */

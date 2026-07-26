@@ -1,0 +1,21 @@
+{% if photos is empty %}
+    <p class="etat-vide">{{ vide }}</p>
+{% else %}
+    <ul class="grille-photos">
+        {% for photo in photos %}
+            <li>
+                <figure>
+                    <button type="button" class="photo-vignette" data-visionneuse
+                            data-src="{{ path('client_photo_apercu', { id: photo.id }) }}"
+                            data-nom="{{ photo.nomOriginal }}"
+                            data-telechargement="{{ path('client_photo_telechargement', { id: photo.id }) }}">
+                        <img src="{{ path('client_photo_miniature', { id: photo.id }) }}" alt="" loading="lazy">
+                    </button>
+                    <figcaption>
+                        <a class="bouton bouton--petit bouton--pleine-largeur" href="{{ path('client_photo_telechargement', { id: photo.id }) }}">Télécharger</a>
+                    </figcaption>
+                </figure>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

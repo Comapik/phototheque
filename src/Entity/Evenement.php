@@ -35,6 +35,13 @@ class Evenement
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
+     * Autorise les clients à ajouter leurs propres photos (ex. depuis leur téléphone).
+     * Ces photos sont stockées à part des photos du photographe (cf. Photo::$origine).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $uploadClientAutorise = false;
+
+    /**
      * @var Collection<int, Photo>
      */
     #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'evenement', orphanRemoval: true)]
@@ -121,6 +128,18 @@ class Evenement
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function isUploadClientAutorise(): bool
+    {
+        return $this->uploadClientAutorise;
+    }
+
+    public function setUploadClientAutorise(bool $uploadClientAutorise): static
+    {
+        $this->uploadClientAutorise = $uploadClientAutorise;
 
         return $this;
     }

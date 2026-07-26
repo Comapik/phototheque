@@ -16,6 +16,7 @@
                     {{ form_row(formEvenement.date) }}
                     {{ form_row(formEvenement.description) }}
                     {{ form_row(formEvenement.slug) }}
+                    {{ form_row(formEvenement.uploadClientAutorise) }}
 
                     <div class="champ">
                         <label>{{ formEvenement.clients.vars.label }}</label>
@@ -69,6 +70,7 @@
                             <th>Date</th>
                             <th>Photos</th>
                             <th>Clients</th>
+                            <th>Upload clients</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -79,6 +81,7 @@
                                 <td>{{ evenement.date|date('d/m/Y') }}</td>
                                 <td>{{ evenement.photos|length }}</td>
                                 <td class="cellule-discrete">{{ evenement.clients|map(c => c.nom)|join(', ') ?: '—' }}</td>
+                                <td>{{ evenement.uploadClientAutorise ? 'Oui' : 'Non' }}</td>
                                 <td>
                                     <div class="actions">
                                         <a class="bouton bouton--secondaire bouton--petit" href="{{ path('admin_evenement_photos', { id: evenement.id }) }}">Photos</a>

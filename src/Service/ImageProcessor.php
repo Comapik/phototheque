@@ -27,7 +27,7 @@ class ImageProcessor
     ) {
     }
 
-    public function traiter(UploadedFile $fichier, Evenement $evenement, int $ordre): Photo
+    public function traiter(UploadedFile $fichier, Evenement $evenement, int $ordre, string $origine = Photo::ORIGINE_PHOTOGRAPHE): Photo
     {
         $nomOriginal = basename($fichier->getClientOriginalName());
 
@@ -98,6 +98,7 @@ class ImageProcessor
         $photo->setHauteur($hauteur);
         $photo->setTaille((int) filesize($cheminBasseDefAbsolu));
         $photo->setOrdre($ordre);
+        $photo->setOrigine($origine);
 
         return $photo;
     }

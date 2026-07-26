@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class EvenementVoter extends Voter
 {
     public const VOIR = 'EVENEMENT_VOIR';
+    public const UPLOAD = 'EVENEMENT_UPLOAD';
 
     public function __construct(
         private readonly AccesClientRepository $accesClientRepository,
@@ -19,7 +20,7 @@ class EvenementVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return self::VOIR === $attribute && $subject instanceof Evenement;
+        return in_array($attribute, [self::VOIR, self::UPLOAD], true) && $subject instanceof Evenement;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -37,6 +38,10 @@ class EvenementVoter extends Voter
         /** @var Evenement $evenement */
         $evenement = $subject;
 
-        return $this->accesClientRepository->existeAcces($user, $evenement);
+        if (!$this->accesClientRepository->existeAcces($user, $evenement)) {
+            return false;
+        }
+
+        return self::VOIR === $attribute || $evenement->isUploadClientAutorise();
     }
 }

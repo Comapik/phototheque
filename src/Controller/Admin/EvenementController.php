@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\AccesClient;
 use App\Entity\Evenement;
+use App\Entity\Photo;
 use App\Form\EvenementType;
 use App\Repository\PhotoRepository;
 use App\Service\ImageProcessor;
@@ -143,9 +144,12 @@ class EvenementController extends AbstractController
             return $this->redirectToRoute('admin_evenement_photos', ['id' => $evenement->getId()]);
         }
 
+        $photos = $photoRepository->findBy(['evenement' => $evenement], ['ordre' => 'ASC']);
+
         return $this->render('admin/evenement/photos.html.twig', [
             'evenement' => $evenement,
-            'photos' => $photoRepository->findBy(['evenement' => $evenement], ['ordre' => 'ASC']),
+            'photosPhotographe' => array_filter($photos, static fn (Photo $photo): bool => !$photo->estAjouteeParClient()),
+            'photosClients' => array_filter($photos, static fn (Photo $photo): bool => $photo->estAjouteeParClient()),
         ]);
     }
 }
